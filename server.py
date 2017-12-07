@@ -10,6 +10,20 @@ config = {
   "serviceAccount": "firebaseKey.json"
 }
 
+# {
+#     "userId": "lolilol58",
+#     "pendingSam": true,
+#     "matchedWith": 0,
+#     "origin": {
+#         "lat": "10",
+#         "lng": "5"
+#     },
+#     "destination": {
+#         "lat": "20",
+#         "lng": "25"
+#     }
+# }
+
 firebase = pyrebase.initialize_app(config)
 # Get a reference to the database service
 db = firebase.database()
@@ -18,27 +32,29 @@ db = firebase.database()
 
 app = FlaskAPI(__name__)
 
-users = {
-    0: {
-        "gpsX": 5,
-        "gpsY": 10,
-        "matchedWith": 0,
-    },
-    1: {
-        "gpsX": 5,
-        "gpsY": 10,
-        "matchedWith": 3,
-    },
-    2: {
-        "gpsX": 5,
-        "gpsY": 10,
-        "matchedWith": 2,
-    },
-}
+@app.route("/findRoute", methods=['GET'])
+def findRoute():
+    userId = request.args.get('userId')
+    users = db.child("users").get().val()
+    print("users")
+    for i in users:
+        print (i, users[i])
+    userData = users[userId]
 
+    pendingSams = {}
+    pendingDrunks = {}
 
-@app.route("/findMatch", methods=['GET'])
-def tryFindMatch():
+    for k, user in users.items():
+        if user[0]["pendingSam"] == 'True':
+            pendingSams[k] = user[0]
+
+        if user[0]["pendingSam"]  == 'True':
+            pendingDrunks[k] = user[0]
+
+    tryFindMatch(userData.origin, userData.destination, pendingDrunks)
+    return pendingSams, status.HTTP_201_CREATED
+
+def tryFindMatch(origin, destination, pendingDrunks):
     return False
 
 @app.route("/", methods=['GET', 'POST'])
@@ -47,15 +63,18 @@ def notes_list():
     List or create notes.
     """
     if request.method == 'POST':
-        gpsX = str(request.data.get('gpsX', ''))
-        gpsY = str(request.data.get('gpsY', ''))
-        idx = max(users.keys()) + 1
+        userId = str(request.data.get('userId', ''))
+        pendingSam = str(request.data.get('pendingSam', ''))
+        matchedWith = str(request.data.get('matchedWith', ''))
+        origin = str(request.data.get('origin', ''))
+        destination = str(request.data.get('destination', ''))
         newUser = {
-            "gpsX": gpsX,
-            "gpsY": gpsY,
-            "matchedWith": 0,
+            "pendingSam": pendingSam,
+            "matchedWith": matchedWith,
+            "origin": origin,
+            "destination": destination
         },
-        results = db.child("users/"+request.data.get('userId', '')).set(newUser)
+        results = db.child("users/"+request.data.get('userId')).set(newUser)
 
         return results, status.HTTP_201_CREATED
 
