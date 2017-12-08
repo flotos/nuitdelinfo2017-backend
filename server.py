@@ -86,7 +86,7 @@ def addTrip():
 
 
 @app.route("/", methods=['GET', 'POST'])
-def notes_list():
+def userList():
     """
     List or create notes.
     """
@@ -105,6 +105,10 @@ def notes_list():
             "origin": origin,
             "destination": destination
         },
+        print('newUser')
+        print(newUser)
+        print('request.data')
+        print(request.data)
         results = db.child("users/"+request.data.get('userId')).set(newUser)
 
         return results, status.HTTP_201_CREATED
