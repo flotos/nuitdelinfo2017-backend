@@ -1,5 +1,6 @@
 from flask import request, url_for
 from flask_api import FlaskAPI, status, exceptions
+from flask_cors import CORS
 from match import matching
 import pyrebase
 
@@ -32,6 +33,7 @@ db = firebase.database()
 # auth = firebase.auth()
 
 app = FlaskAPI(__name__)
+CORS(app)
 
 @app.route("/findRoute", methods=['GET'])
 def findRoute():
@@ -109,27 +111,6 @@ def notes_list():
 
     # request.method == 'GET'
     return db.child("users").get().val()
-
-
-@app.route("/<int:key>/", methods=['GET', 'PUT', 'DELETE'])
-def notes_detail(key):
-    """
-    Retrieve, update or delete note instances.
-    """
-    # if request.method == 'PUT':
-    #     note = str(request.data.get('text', ''))
-    #     notes[key] = note
-    #     return users_repr(key)
-
-    # elif request.method == 'DELETE':
-    #     notes.pop(key, None)
-    #     return '', status.HTTP_204_NO_CONTENT
-
-    # request.method == 'GET'
-    # if key not in users:
-    #     raise exceptions.NotFound()
-    # return users_repr(key)
-
 
 if __name__ == "__main__":
     app.run(debug=True)

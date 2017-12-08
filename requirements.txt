@@ -1,6 +1,7 @@
 click==6.7
 Flask==0.12.2
 Flask-API==1.0
+Flask-Cors==3.0.3
 gcloud==0.17.0
 googleapis-common-protos==1.5.3
 gunicorn==19.7.1
