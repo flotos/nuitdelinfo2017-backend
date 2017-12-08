@@ -64,11 +64,20 @@ def findRoute():
     elif requestStatus == "Sam":
         result = matching(userData["origin"], userData["destination"], pendingDrunks)
 
-    print(result)
-    print(requestStatus)
-    print(pendingSams)
+    if result is False:
+        return {}, status.HTTP_204_NO_CONTENT
+    else:
+        db.child("users").child(userId).child("0").update({"matchedWith": result["userId"]})
+        db.child("users").child(result["userId"]).child("0").update({"matchedWith": userId})
+        return result, status.HTTP_201_CREATED
 
-    # bourre > sam et vice versa
+@app.route("/updateTrip", methods=['POST'])
+def addTrip():
+    userId = request.data.get('userId')
+    origin = request.data.get('origin')
+    destination = request.data.get('destination')
+    result = db.child("users").child(userId).update({"origin": origin, "destination": destination})
+
     if result is False:
         return {}, status.HTTP_204_NO_CONTENT
     return result, status.HTTP_201_CREATED
@@ -87,6 +96,7 @@ def notes_list():
         origin = request.data["origin"]
         destination = request.data["destination"]
         newUser = {
+            "userId": userId,
             "pendingSam": pendingSam,
             "pendingDrunk": pendingDrunk,
             "matchedWith": matchedWith,
