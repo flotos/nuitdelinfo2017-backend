@@ -40,20 +40,39 @@ def findRoute():
     # print("users")
     # for i in users:
     #     print (i, users[i])
-    userData = users[userId]
+    userData = users[userId][0]
 
     pendingSams = {}
     pendingDrunks = {}
+    
+    requestStatus = ''
+    if userData["pendingDrunk"] == 'True':
+        requestStatus = "Drunk"
+    if userData["pendingSam"] == 'True':
+        requestStatus = "Sam"
 
     for k, user in users.items():
-        if user[0]["pendingSam"] == 'True':
-            pendingSams[k] = user[0]
+        if requestStatus == "Drunk":
+            if user[0]["pendingSam"] == 'True':
+                pendingSams[k] = user[0]
+        elif requestStatus == "Sam":
+            if user[0]["pendingDrunk"]  == 'True':
+                pendingDrunks[k] = user[0]
 
-        if user[0]["pendingSam"]  == 'True':
-            pendingDrunks[k] = user[0]
+    if requestStatus == "Drunk":
+        result = matching(userData["origin"], userData["destination"], pendingSams)
+    elif requestStatus == "Sam":
+        result = matching(userData["origin"], userData["destination"], pendingDrunks)
 
-    print(matching(userData[0]["origin"], userData[0]["destination"], pendingDrunks))
-    return pendingSams, status.HTTP_201_CREATED
+    print(result)
+    print(requestStatus)
+    print(pendingSams)
+
+    # bourre > sam et vice versa
+    if result is False:
+        return {}, status.HTTP_204_NO_CONTENT
+    return result, status.HTTP_201_CREATED
+
 
 @app.route("/", methods=['GET', 'POST'])
 def notes_list():
@@ -63,11 +82,13 @@ def notes_list():
     if request.method == 'POST':
         userId = request.data.get('userId', '')
         pendingSam = request.data.get('pendingSam', '')
+        pendingDrunk = request.data.get('pendingDrunk', '')
         matchedWith = request.data.get('matchedWith', '')
         origin = request.data["origin"]
         destination = request.data["destination"]
         newUser = {
             "pendingSam": pendingSam,
+            "pendingDrunk": pendingDrunk,
             "matchedWith": matchedWith,
             "origin": origin,
             "destination": destination
