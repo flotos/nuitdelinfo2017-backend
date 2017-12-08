@@ -61,6 +61,8 @@ def findRoute():
             if user[0]["pendingDrunk"]  == 'True':
                 pendingDrunks[k] = user[0]
 
+    result = False
+
     if requestStatus == "Drunk":
         result = matching(userData["origin"], userData["destination"], pendingSams)
     elif requestStatus == "Sam":
