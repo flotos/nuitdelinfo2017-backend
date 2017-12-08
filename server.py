@@ -48,17 +48,17 @@ def findRoute():
     pendingDrunks = {}
     
     requestStatus = ''
-    if userData["pendingDrunk"] == 'True':
+    if userData["pendingDrunk"] == True:
         requestStatus = "Drunk"
-    if userData["pendingSam"] == 'True':
+    if userData["pendingSam"] == True:
         requestStatus = "Sam"
 
     for k, user in users.items():
         if requestStatus == "Drunk":
-            if user[0]["pendingSam"] == 'True':
+            if user[0]["pendingSam"] == True:
                 pendingSams[k] = user[0]
         elif requestStatus == "Sam":
-            if user[0]["pendingDrunk"]  == 'True':
+            if user[0]["pendingDrunk"]  == True:
                 pendingDrunks[k] = user[0]
 
     result = False
