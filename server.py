@@ -1,5 +1,6 @@
 from flask import request, url_for
 from flask_api import FlaskAPI, status, exceptions
+from test import matching
 import pyrebase
 
 config = {
@@ -36,9 +37,9 @@ app = FlaskAPI(__name__)
 def findRoute():
     userId = request.args.get('userId')
     users = db.child("users").get().val()
-    print("users")
-    for i in users:
-        print (i, users[i])
+    # print("users")
+    # for i in users:
+    #     print (i, users[i])
     userData = users[userId]
 
     pendingSams = {}
@@ -51,11 +52,8 @@ def findRoute():
         if user[0]["pendingSam"]  == 'True':
             pendingDrunks[k] = user[0]
 
-    tryFindMatch(userData.origin, userData.destination, pendingDrunks)
+    print(matching(userData[0]["origin"], userData[0]["destination"], pendingDrunks))
     return pendingSams, status.HTTP_201_CREATED
-
-def tryFindMatch(origin, destination, pendingDrunks):
-    return False
 
 @app.route("/", methods=['GET', 'POST'])
 def notes_list():
@@ -63,11 +61,11 @@ def notes_list():
     List or create notes.
     """
     if request.method == 'POST':
-        userId = str(request.data.get('userId', ''))
-        pendingSam = str(request.data.get('pendingSam', ''))
-        matchedWith = str(request.data.get('matchedWith', ''))
-        origin = str(request.data.get('origin', ''))
-        destination = str(request.data.get('destination', ''))
+        userId = request.data.get('userId', '')
+        pendingSam = request.data.get('pendingSam', '')
+        matchedWith = request.data.get('matchedWith', '')
+        origin = request.data["origin"]
+        destination = request.data["destination"]
         newUser = {
             "pendingSam": pendingSam,
             "matchedWith": matchedWith,

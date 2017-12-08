@@ -35,28 +35,3 @@ def matching(origin_user, dest_user, list_users, delta=25):
         return list_users[bourre_a_ramene]
     else:
         return False
-
-
-
-
-origin_user = "59 boulevard Jean Brunhes, Toulouse"
-dest_user = "Université jean Jaures Toulouse"
-
-list_users = {}
-list_users["Bourré 1"] = {}
-list_users["Bourré 1"]["origin"] = "2 rue de l'égalité, Toulouse"
-list_users["Bourré 1"]["destination"] = "397 route de saint Simon, Toulouse"
-
-list_users["Bourré 2"] = {}
-list_users["Bourré 2"]["origin"] = "2 rue de l'égalité, Toulouse"
-list_users["Bourré 2"]["destination"] = "395 route de saint Simon, Toulouse"
-
-list_users["Bourré 3"] = {}
-list_users["Bourré 3"]["origin"] = (43.5608548, 1.4724762) # = INSA
-list_users["Bourré 3"]["destination"] = "395 route de saint Simon, Toulouse"
-
-list_users["Bourré 4"] = {}
-list_users["Bourré 4"]["origin"] = (43.012486, -83.6964149) # = Australie
-list_users["Bourré 4"]["destination"] = "395 route de saint Simon, Toulouse"
-
-print(matching(origin_user, dest_user, list_users, delta=30))
